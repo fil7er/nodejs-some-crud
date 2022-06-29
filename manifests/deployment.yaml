@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-crud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-crud
+  template:
+    metadata:
+      labels:
+        app: nodejs-crud
+    spec:
+      containers:
+        - name: nodejs-crud
+          image: fil7er/nodejs-crud
