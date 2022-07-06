@@ -35,8 +35,8 @@ app.listen(port, () => {
 /* Todo */
 
 app.get('/todos', (req, res) => {
-  res.send(cache.keys());
   res.sendFile(path.join(__dirname, '/app.html'));
+  res.send(cache.keys());
 })
 
 app.post('/todos', (req, res) => {
