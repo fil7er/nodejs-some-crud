@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3006
 const fs = require('fs')
 const request = require('request')
 const path = require('path')
@@ -40,7 +40,7 @@ app.get('/todos', (req, res) => {
 })
 
 app.post('/todos', (req, res) => {
-  cache.set(count,req.body)
+  cache.set(count,req.body.inputTodo)
   cache.set(count, cache.get('cache')+1)
   res.sendFile(path.join(__dirname, '/app.html'));
 })

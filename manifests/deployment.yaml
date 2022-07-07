@@ -16,3 +16,5 @@ spec:
       containers:
         - name: nodejs-crud
           image: fil7er/nodejs-crud
+          ports:
+            - containerPort: 3006
