@@ -10,7 +10,8 @@ cache.set('cache', 0)
 let count = cache.get('cache')
 
 
-var download = function(uri, filename, callback){
+if(!fs.existsSync('file/test.jpeg')){
+  var download = function(uri, filename, callback){
     request.head(uri, function(err, res, body){    
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
@@ -19,6 +20,7 @@ var download = function(uri, filename, callback){
 download('https://i.picsum.photos/id/372/1200/1200.jpg?hmac=p0huIhif1Pv0hf7lYYi0-Sbq3ITX9NpyPv7oc5oQOgw', 'file/test.jpeg', function(){
     console.log('done');
 });
+}
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/app.html'));
