@@ -18,3 +18,14 @@ spec:
           image: fil7er/nodejs-crud
           ports:
             - containerPort: 3006
+          env:
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: nodejs-crud-db-secret
+          - name: MONGO_PASS
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: nodejs-crud-db-secret
