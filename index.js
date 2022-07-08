@@ -56,7 +56,7 @@ app.get('/todos', (req, res) => {
 app.post('/todos', (req, res) => {
   mongoClient.connect(DB_HOST, (err, client) => {
     if (err) throw err
-    if (req.body.todos.lenght > 140) throw err
+    if (req.body.todos.lenght > 140) res.send(401);
     const database = client.db(DB_DB);
     database.collection(DB_COLLECTION).insertOne(req.body.todos, (err) => {
       if (err) throw err
