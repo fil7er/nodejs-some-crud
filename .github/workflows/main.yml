@@ -9,6 +9,7 @@ env:
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
   IMAGE: ${{ secrets.GKE_IMG }}
+  IMAGE_DB: ${{ secrets.GKE_IMG_DB }}
 
 jobs:
   setup-build-publish-deploy:
