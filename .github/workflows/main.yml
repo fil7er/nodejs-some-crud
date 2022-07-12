@@ -34,6 +34,7 @@ jobs:
             --tag "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
             
             
       - name: Build DB
@@ -42,6 +43,7 @@ jobs:
             --tag "gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
 
 
       - name: Publish Back
