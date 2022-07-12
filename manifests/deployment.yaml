@@ -29,3 +29,7 @@ spec:
               secretKeyRef:
                 key: password
                 name: nodejs-crud-db-secret
+          resources:
+            limits:
+              memory: 120Mi
+              cpu: 250m
