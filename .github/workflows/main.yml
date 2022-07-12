@@ -28,17 +28,30 @@ jobs:
           service_account_key: ${{ secrets.GKE_SA_KEY }}
           export_default_credentials: true
 
-      - name: Build
+      - name: Build Back
         run: |-
           docker build \
             --tag "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
+            
+            
+      - name: Build DB
+        run: |-
+          docker build \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
 
 
-      - name: Publish
+      - name: Publish Back
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+          
+          
+      - name: Publish DB
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
 
 
       - name: Set Kustomize
@@ -51,6 +64,7 @@ jobs:
           kubectl config set-context --current --namespace=${GITHUB_REF#refs/heads/}
           kustomize edit set namespace ${GITHUB_REF#refs/heads/}
           kustomize edit set image gcr.io/PROJECT_ID/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
+          kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DB=gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kubectl apply -k .
           kubectl rollout status deployment $IMAGE
           kubectl get services -o wide
