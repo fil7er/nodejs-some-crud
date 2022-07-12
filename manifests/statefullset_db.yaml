@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: statefullset-db
-  namespace: my-namespace
 spec:
   selector:
     matchLabels:
@@ -16,7 +15,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongo
+        image: PROJECT-DB/IMAGE
         ports:
         - containerPort: 27017
           name: mongodb
