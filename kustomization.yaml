@@ -4,10 +4,10 @@ images:
   - name: PROJECT-BACK/IMAGE
     newName: fil7er/nodejs-crud
   - name: PROJECT-DB/IMAGE
-    newName: mongo
+    newName: bitnami/mongodb
 resources:
-  - manifests/deployment.yaml
-  - manifests/service.yaml
   - manifests/statefullset_db.yaml
   - manifests/service_db.yaml
+  - manifests/deployment.yaml
+  - manifests/service.yaml
   - manifests/ingress.yaml

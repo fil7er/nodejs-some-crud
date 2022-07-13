@@ -3,6 +3,7 @@ const app = express()
 const port = process.env.PORT || 3013
 const username = process.env.MONGO_USER
 const password = process.env.MONGO_PASS
+const server = process.env.MONGO_HOST
 const fs = require('fs')
 const request = require('request')
 const path = require('path')
@@ -12,7 +13,7 @@ cache.set('cache', 0)
 let count = cache.get('cache')
 
 const mongoClient = require('mongodb').MongoClient;
-const DB_HOST = 'mongodb://localhost:27017/';
+const DB_HOST = 'mongodb://'+username+':'+password+'@'+server+':27017/';
 const DB_DB = 'myDB';
 const DB_COLLECTION = 'myList';
 
