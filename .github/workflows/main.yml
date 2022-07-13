@@ -80,4 +80,4 @@ jobs:
           kubectl apply -k .
           kubectl rollout status statefulset $IMAGE_DB
           kubectl rollout status deployment $IMAGE
-          kubectl get services -o wide
+          kubectl get svc
