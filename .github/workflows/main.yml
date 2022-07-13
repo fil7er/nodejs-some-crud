@@ -8,6 +8,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  GKE_SERVICE_NAME: ${{ secrets.GKE_SVC_NAME }}
   IMAGE: ${{ secrets.GKE_IMG }}
   IMAGE_DB: ${{ secrets.GKE_IMG_DB }}
 
@@ -19,7 +20,8 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
       
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
