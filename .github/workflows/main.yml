@@ -8,7 +8,9 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
   GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  GKE_SERVICE_NAME: ${{ secrets.GKE_SVC_NAME }}
   IMAGE: ${{ secrets.GKE_IMG }}
+  IMAGE_DB: ${{ secrets.GKE_IMG_DB }}
 
 jobs:
   setup-build-publish-deploy:
@@ -18,7 +20,8 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
       
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
@@ -26,18 +29,41 @@ jobs:
           project_id: ${{ secrets.GKE_PROJECT }}
           service_account_key: ${{ secrets.GKE_SA_KEY }}
           export_default_credentials: true
+          
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+      # Get the GKE credentials so we can deploy to the cluster
+      - run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
 
-      - name: Build
+      - name: Build Back
         run: |-
           docker build \
             --tag "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
+            
+            
+      - name: Build DB
+        run: |-
+          docker build \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
 
 
-      - name: Publish
+      - name: Publish Back
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+          
+          
+      - name: Publish DB
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
 
 
       - name: Set Kustomize
@@ -50,6 +76,8 @@ jobs:
           kubectl config set-context --current --namespace=${GITHUB_REF#refs/heads/}
           kustomize edit set namespace ${GITHUB_REF#refs/heads/}
           kustomize edit set image gcr.io/PROJECT_ID/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
+          kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DB=gcr.io/$PROJECT_ID/$IMAGE_DB:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kubectl apply -k .
           kubectl rollout status deployment $IMAGE
+          kubectl rollout status statefulset $IMAGE_DB
           kubectl get services -o wide
