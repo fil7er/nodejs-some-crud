@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nodejs-crud
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: nodejs-crud
@@ -37,3 +37,13 @@ spec:
             limits:
               memory: 120Mi
               cpu: 250m
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 15
+            periodSeconds: 20
