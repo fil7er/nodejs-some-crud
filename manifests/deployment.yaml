@@ -33,6 +33,8 @@ spec:
               secretKeyRef:
                 key: password
                 name: nodejs-crud-db-secret
+          - name: NATS_URL
+            value: nats://my-nats:4222
           resources:
             limits:
               memory: 120Mi
