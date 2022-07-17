@@ -11,6 +11,7 @@ const NodeCache = require("node-cache")
 const cache = new NodeCache({ stdTTL: 240 })
 cache.set('cache', 0)
 let count = cache.get('cache')
+const natsc = require("./nats.js")
 
 const mongoClient = require('mongodb').MongoClient;
 const DB_HOST = 'mongodb://'+username+':'+password+'@'+server+':27017/';
@@ -49,6 +50,7 @@ app.get('/todos', (req, res) => {
     const database = client.db(DB_DB);
     database.collection(DB_COLLECTION).find({ cod: req.query.cod}).toArray((err, result) => {
       if (err) throw err
+      natsc.pubNats(result)
       res.send(result);
     });
   });
