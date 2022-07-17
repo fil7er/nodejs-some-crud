@@ -30,3 +30,25 @@ spec:
               secretKeyRef:
                 key: password
                 name: nodejs-crud-db-secret
+        livenessProbe:
+          exec:
+            command:
+                - bash
+                - "-c"
+                - |
+                  mongo -u $MONGODB_ROOT_USER -p $MONGODB_ROOT_PASSWORD --eval db.adminCommand\(\"ping\"\)
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - |
+                mongo -u $MONGODB_ROOT_USER -p $MONGODB_ROOT_PASSWORD --eval db.adminCommand\(\"ping\"\)
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
