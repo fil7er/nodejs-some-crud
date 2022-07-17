@@ -6,6 +6,7 @@ const password = process.env.MONGO_PASS
 const server = process.env.MONGO_HOST
 const fs = require('fs')
 const request = require('request')
+const bodyParser = require('body-parser');
 const path = require('path')
 const NodeCache = require("node-cache")
 const cache = new NodeCache({ stdTTL: 240 })
@@ -44,27 +45,31 @@ app.listen(port, () => {
 
 /* Todo */
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.get('/todos', (req, res) => {
   mongoClient.connect(DB_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(DB_DB);
     database.collection(DB_COLLECTION).find({ cod: req.query.cod}).toArray((err, result) => {
       if (err) throw err
-      natsc.pubNats(result)
-      res.send(result);
+      natsc.pubNats(JSON.stringify(result))
+      res.json(result);
     });
   });
 })
 
 app.post('/todos', (req, res) => {
   mongoClient.connect(DB_HOST, (err, client) => {
+    console.log(req.body.todos)
     if (err) throw err
     if (req.body.todos.lenght > 140) res.send(401);
     const database = client.db(DB_DB);
-    database.collection(DB_COLLECTION).insertOne(req.body.todos, (err) => {
+    database.collection(DB_COLLECTION).insertOne(req.body, (err) => {
       if (err) throw err
       res.status(201);
-      res.send();
+      res.send("Done");
     });
   });
 })
