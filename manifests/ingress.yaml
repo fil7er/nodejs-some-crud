@@ -2,14 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nodejs-crud-ingress
+  namespace: some-crud
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /crud
         pathType: Prefix
         backend:
           service:
             name: nodejs-crud-svc
             port:
-              number: 3013
+              number: 80

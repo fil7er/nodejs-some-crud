@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: nodejs-crud-cronjob
+  namespace: some-crud
 spec:
   schedule: "0 0 * * *"
   jobTemplate:

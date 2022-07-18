@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: cpu-rate
+  namespace: some-crud
 spec:
   metrics:
   - name: cpu-rate
@@ -9,7 +10,11 @@ spec:
     successCondition: result > 750
     provider:
       prometheus:
-        address: http://kube-prometheus-stack-1657-prometheus.prometheus.svc.cluster.local:9090
+        address: 
+          valueFrom:
+              secretKeyRef:
+                key: prometheus_url
+                name: nodejs-crud-secret
         query: |
           scalar(
             sum(
